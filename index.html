@@ -1287,6 +1287,49 @@ var NourApp = (() => {
       currentUtt = null;
     }
   }
+  function AudioPlayerMulti({ srcs }) {
+    const [playing, setPlaying] = (0, import_react.useState)(false);
+    const [idx, setIdx] = (0, import_react.useState)(0);
+    const play = (i = 0) => {
+      if (i >= srcs.length) {
+        setPlaying(false);
+        setIdx(0);
+        return;
+      }
+      const a = new Audio(srcs[i]);
+      currentAudio = a;
+      setPlaying(true);
+      setIdx(i);
+      a.play();
+      a.onended = () => play(i + 1);
+      a.onerror = () => {
+        setPlaying(false);
+      };
+    };
+    const toggle = () => {
+      if (playing) {
+        stopAllAudio();
+        setPlaying(false);
+        setIdx(0);
+      } else play(0);
+    };
+    (0, import_react.useEffect)(() => () => stopAllAudio(), []);
+    return /* @__PURE__ */ React.createElement("button", { onClick: toggle, style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+      padding: "10px 16px",
+      background: playing ? "rgba(255,107,157,.15)" : "rgba(0,207,255,.1)",
+      border: `1px solid ${playing ? "#ff6b9d" : "#00cfff"}`,
+      borderRadius: 20,
+      cursor: "pointer",
+      fontSize: 14,
+      fontWeight: 700,
+      color: playing ? "#ff6b9d" : "#00cfff",
+      marginBottom: 12,
+      transition: "all .2s"
+    } }, playing ? `\u23F9 Arr\xEAter (${idx + 1}/${srcs.length})` : "\u{1F50A} \xC9couter toute l'histoire");
+  }
   function AudioReader({ text, src = null }) {
     const [playing, setPlaying] = (0, import_react.useState)(false);
     const [loading, setLoading] = (0, import_react.useState)(false);
@@ -1626,7 +1669,7 @@ var NourApp = (() => {
     const [story, setStory] = (0, import_react.useState)(null);
     if (story) {
       const p = story;
-      return /* @__PURE__ */ React.createElement("div", { style: { padding: "0 16px 32px" } }, /* @__PURE__ */ React.createElement(BackBtn, { onBack: () => setStory(null) }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 36 } }, p.icon), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h1", { style: { color: "var(--text)", fontSize: 22, fontWeight: 800, margin: 0 } }, p.name), /* @__PURE__ */ React.createElement(AB, { arabic: p.arabic, phonetic: p.phonetic, trans: p.trans, color: p.color, size: 12 }))), /* @__PURE__ */ React.createElement(AudioReader, { text: p.story.map((s) => `${s.title}. ${s.text}`).join(". ") }), p.story.map((s, i) => {
+      return /* @__PURE__ */ React.createElement("div", { style: { padding: "0 16px 32px" } }, /* @__PURE__ */ React.createElement(BackBtn, { onBack: () => setStory(null) }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 36 } }, p.icon), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h1", { style: { color: "var(--text)", fontSize: 22, fontWeight: 800, margin: 0 } }, p.name), /* @__PURE__ */ React.createElement(AB, { arabic: p.arabic, phonetic: p.phonetic, trans: p.trans, color: p.color, size: 12 }))), p.id === 1 ? /* @__PURE__ */ React.createElement(AudioPlayerMulti, { srcs: Object.values(ADAM_AUDIOS) }) : /* @__PURE__ */ React.createElement(AudioReader, { text: p.story.map((s) => `${s.title}. ${s.text}`).join(". ") }), p.story.map((s, i) => {
         const adamKeys = ["creation_adam", "enseignement_noms", "jardin_epreuve", "premier_prophete"];
         const audioSrc = p.id === 1 && ADAM_AUDIOS ? ADAM_AUDIOS[adamKeys[i]] : null;
         return /* @__PURE__ */ React.createElement(NeonCard, { key: i, color: p.color, style: { padding: "14px 16px", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("p", { style: { color: p.color, fontWeight: 700, fontSize: 16, margin: "0 0 8px" } }, "\u{1F4D6} ", s.title), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--text)", fontSize: 15, lineHeight: 1.7, margin: "0 0 10px" } }, s.text), /* @__PURE__ */ React.createElement(AudioReader, { text: `${s.title}. ${s.text}`, src: audioSrc }));
