@@ -5,7 +5,7 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.nouralislam.nouralislam",
+      "package_name": "com.nouralislam.android",
       "sha256_cert_fingerprints": [
         "6D:BD:6A:10:35:C8:35:80:7B:43:D0:FA:84:A4:30:A0:2A:C1:B3:14:5E:6E:6A:84:F3:E5:3A:96:FE:9F:5A:BB"
       ]
